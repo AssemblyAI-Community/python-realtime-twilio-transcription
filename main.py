@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask, request, Response
 from flask_sock import Sock
 
@@ -16,8 +18,11 @@ def receive_call():
         xml = f"""
 <Response>
     <Say>
-        You have connected to the Flask application
+        Speak to see your audio data printed to the console
     </Say>
+    <Connect>
+        <Stream url='wss://{request.host}{WEBSOCKET_ROUTE}' />
+    </Connect>
 </Response>
 """.strip()
         return Response(xml, mimetype='text/xml')
@@ -26,7 +31,18 @@ def receive_call():
 
 @sock.route(WEBSOCKET_ROUTE)
 def transcription_websocket(ws):
-    pass
+    while True:
+        data = json.loads(ws.receive())
+        match data['event']:
+            case "connected":
+                print('twilio connected')
+            case "start":
+                print('twilio started')
+            case "media": 
+                payload = data['media']['payload']
+                print(payload)
+            case "stop":
+                print('twilio stopped')
 
 
 if __name__ == "__main__":
