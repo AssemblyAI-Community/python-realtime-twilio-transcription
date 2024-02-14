@@ -1,8 +1,13 @@
 import base64
 import json
+import os
 
 from flask import Flask, request, Response
 from flask_sock import Sock
+import ngrok
+from twilio.rest import Client
+from dotenv import load_dotenv
+load_dotenv()
 
 from twilio_transcriber import TwilioTranscriber
 
@@ -12,6 +17,17 @@ DEBUG = False
 INCOMING_CALL_ROUTE = '/'
 WEBSOCKET_ROUTE = '/realtime'
 
+# Twilio authentication
+account_sid = os.environ['TWILIO_ACCOUNT_SID']
+api_key = os.environ['TWILIO_API_KEY_SID']
+api_secret = os.environ['TWILIO_API_SECRET']
+client = Client(api_key, api_secret, account_sid)
+
+# Twilio phone number to call
+TWILIO_NUMBER = os.environ['TWILIO_NUMBER']
+
+# ngrok authentication
+ngrok.set_auth_token(os.getenv("NGROK_AUTHTOKEN"))
 app = Flask(__name__)
 sock = Sock(app)
 
@@ -54,4 +70,19 @@ def transcription_websocket(ws):
 
 
 if __name__ == "__main__":
-    app.run(port=PORT, debug=DEBUG)
+    try:
+        # Open Ngrok tunnel
+        listener = ngrok.forward(f"http://localhost:{PORT}")
+        print(f"Ngrok tunnel opened at {listener.url()} for port {PORT}")
+        NGROK_URL = listener.url()
+
+        # Set ngrok URL to ne the webhook for the appropriate Twilio number
+        twilio_numbers = client.incoming_phone_numbers.list()
+        twilio_number_sid = [num.sid for num in twilio_numbers if num.phone_number == TWILIO_NUMBER][0]
+        client.incoming_phone_numbers(twilio_number_sid).update(account_sid, voice_url=f"{NGROK_URL}{INCOMING_CALL_ROUTE}")
+
+        # run the app
+        app.run(port=PORT, debug=DEBUG)
+    finally:
+        # Always disconnect the ngrok tunnel
+        ngrok.disconnect()
