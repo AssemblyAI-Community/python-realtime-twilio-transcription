@@ -76,7 +76,7 @@ if __name__ == "__main__":
         print(f"Ngrok tunnel opened at {listener.url()} for port {PORT}")
         NGROK_URL = listener.url()
 
-        # Set ngrok URL to ne the webhook for the appropriate Twilio number
+        # Set ngrok URL to be the webhook for the appropriate Twilio number
         twilio_numbers = client.incoming_phone_numbers.list()
         twilio_number_sid = [num.sid for num in twilio_numbers if num.phone_number == TWILIO_NUMBER][0]
         client.incoming_phone_numbers(twilio_number_sid).update(account_sid, voice_url=f"{NGROK_URL}{INCOMING_CALL_ROUTE}")
