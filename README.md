@@ -20,7 +20,7 @@ python -m venv venv
 pip install Flask flask-sock assemblyai python-dotenv ngrok twilio
 ```
 
-1. Change the filename of `.env.example` to `.env` and replace `your-key-here` with your corresponding API key, authtoken, etc. for each line. **Make sure to not share this file with anyone or upload it to GitHub**. You will need:
+3. Change the filename of `.env.example` to `.env` and replace `your-key-here` with your corresponding API key, authtoken, etc. for each line. **Make sure to not share this file with anyone or upload it to GitHub**. You will need:
     1. An [AssemblyAI API Key](https://www.assemblyai.com/dashboard/signup) with funds added to access realtime transcription
     2. A [Twilio account](https://www.twilio.com/) for your account SID as long as an API Key SID and secret
     3. A [Twilio number](https://www.twilio.com/docs/phone-numbers). The value for `TWILIO_NUMBER` should be formatted as a sequence of digits with country code e.g. `+12345678910`.
