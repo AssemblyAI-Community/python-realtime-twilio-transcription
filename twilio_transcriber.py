@@ -84,7 +84,7 @@ def on_terminated(client: StreamingClient, event: TerminationEvent):
 def on_error(client: StreamingClient, error: StreamingError):
     print(f"\nError: {error}")
 
-
+    
 class TwilioTranscriber(StreamingClient):
     def __init__(self):
         # Create options for the StreamingClient
