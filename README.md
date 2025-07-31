@@ -1,4 +1,6 @@
-# Environment and Credentials Setup
+# Transcribe a Phone Call in Real-Time Using Python with AssemblyAI and Twilio
+
+## Environment and Credentials Setup
 
 1. Create a virtual environment
 
@@ -15,7 +17,7 @@ python -m venv venv
 2. Install required packages
 
 ```shell
-pip install -r requirements.txt
+pip install Flask flask-sock assemblyai python-dotenv ngrok twilio
 ```
 
 3. Change the filename of `.env.example` to `.env` and replace `your-key-here` with your corresponding API key, authtoken, etc. for each line. **Make sure to not share this file with anyone or upload it to GitHub**. You will need:
@@ -24,7 +26,6 @@ pip install -r requirements.txt
     3. A [Twilio number](https://www.twilio.com/docs/phone-numbers). The value for `TWILIO_NUMBER` should be formatted as a sequence of digits with country code e.g. `+12345678910`.
     4. An [ngrok](https://ngrok.com/) account authtoken
 
-
-# Run the application
+## Run the application
 
 Execute `python main.py` or `python3 main.py` in the project directory to start the application. Then, call your Twilio phone number and begin speaking. You will see your speech transcribed in the console.
